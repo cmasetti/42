@@ -6,7 +6,7 @@
 /*   By: cmasetti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 13:21:57 by cmasetti          #+#    #+#             */
-/*   Updated: 2018/04/12 14:11:42 by cmasetti         ###   ########.fr       */
+/*   Updated: 2018/06/15 13:17:00 by cmasetti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_list	*ft_lstnew(char const *content, int content_size)
 		return (NULL);
 	if (!content || !content_size)
 	{
-		new->content = "\0";
+		new->content = NULL;
 		new->content_size = 0;
 	}
 	else
@@ -32,7 +32,5 @@ t_list	*ft_lstnew(char const *content, int content_size)
 		new->content_size = content_size;
 	}
 	new->next = NULL;
-	ft_putstr("\nft_lstnew : ");//test
-	ft_putstr(new->content);//test
 	return (new);
 }

@@ -6,7 +6,7 @@
 /*   By: cmasetti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 11:31:10 by cmasetti          #+#    #+#             */
-/*   Updated: 2018/03/04 13:53:24 by cmasetti         ###   ########.fr       */
+/*   Updated: 2018/07/22 12:30:33 by cmasetti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_list	*ft_lstpop(t_list **alst)
 	if (lst->next)
 		*alst = lst->next;
 	else
-		*alst = NULL;;
+		*alst = NULL;
 	lst->next = NULL;
 	return (lst);
 }

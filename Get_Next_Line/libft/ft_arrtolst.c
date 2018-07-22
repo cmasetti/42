@@ -6,7 +6,7 @@
 /*   By: cmasetti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 10:57:57 by cmasetti          #+#    #+#             */
-/*   Updated: 2018/04/12 14:16:33 by cmasetti         ###   ########.fr       */
+/*   Updated: 2018/07/22 12:31:05 by cmasetti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,18 @@ t_list	**ft_arrtolst(char **tab)
 {
 	int		i;
 	t_list	**alst;
+	t_list	*onelst;
 	t_list	*tmplst;
 
-	i = ft_arrlen(tab);
-	i--;
-	alst = NULL;
-	while (tab[i])
+	i = ft_arrlen(tab) - 1;
+	if (i >= 0)
 	{
-//		ft_putstr("\ntab[i] : ");//test
-//		ft_putstr(tab[i]);//test
+		onelst = ft_lstnew(tab[i], (int)ft_strlen(tab[i]));
+		alst = &onelst;
+	}
+	i--;
+	while (i >= 0)
+	{
 		tmplst = ft_lstnew(tab[i], (int)ft_strlen(tab[i]));
 		ft_lstadd(alst, tmplst);
 		free(tmplst);
