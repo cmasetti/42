@@ -6,7 +6,7 @@
 /*   By: cmasetti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/26 17:11:28 by cmasetti          #+#    #+#             */
-/*   Updated: 2018/07/25 20:13:39 by cmasetti         ###   ########.fr       */
+/*   Updated: 2018/08/01 18:12:37 by cmasetti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,13 +98,15 @@ int		get_next_line(const int fd, char **line)
 
 	if (strpast != 0 && charpos(strpast, '\n') >= 0)
 	{
-		*line = ft_strnew(charpos(strpast, '\n'));
-		ft_strncpy(*line, strpast, charpos(strpast, '\n'));//ok
+	//	*line = ft_strnew(charpos(strpast, '\n'));
+//		ft_strncpy(*line, strpast, charpos(strpast, '\n'));//ok
+		*line = strnjoin(NULL, charpos(strpast, '\n'), strpast);//utiliser strnjoin p cas null
 		tmp = strzcpy(charpos(strpast, '\n') + 1, strpast);//errroor tmp semble vide
 	ft_putstr(*line);//
 	ft_putstr(strpast);//
 	ft_putstr("A");//
-		ft_strdel(&strpast);
+		ft_strclr(strpast);//clear strpast then reassign
+//		free(strpast);//necessaire?
 	ft_putstr("A");//
 		strpast = tmp;
 	ft_putstr("A");//
@@ -134,8 +136,9 @@ int		get_next_line(const int fd, char **line)
 		//free strpast and create new of good size
 		tmp = strzcpy(charpos(str, '\n') + 1, str);
 		free(strpast);
-		strpast = tmp;//ok
+//		strpast = tmp;//ok
 		free(tmp);
+		ft_strclr(str);// is this necessary, do i have to do for all cases?
 		return (1);
 	}
 	else
