@@ -6,7 +6,7 @@
 /*   By: cmasetti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/26 17:11:28 by cmasetti          #+#    #+#             */
-/*   Updated: 2018/08/08 14:23:49 by cmasetti         ###   ########.fr       */
+/*   Updated: 2018/08/08 18:07:15 by cmasetti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,8 @@ int		get_next_line(const int fd, char **line)
 	n = read(fd, str, BUFF_SIZE); //si strpast nul ou reste dune ligne seulement
 	if (strpast == 0 && n == 0)//fin de lecture (strpast nul et plus rien a lire)
 	{ft_putstr("B");// cest la ou faut free les trucs
+		free(strpast);//N
+		//free(str);//N
 		return (0);}
 	if (n < 0)//si erreur
 	{ft_putstr("C");//
@@ -120,7 +122,10 @@ int		get_next_line(const int fd, char **line)
 	{
 	ft_putstr("D");//
 		*line = ft_strtrim(strpast);
-		ft_strclr(strpast);//plutot que free pour stopper la boucle infinie ?
+		ft_strclr(strpast);//cest la ou faut free aussi
+		strpast = NULL;
+		//	free(strpast);//N
+	//	free(str);//N
 		return (1);
 	}
 	str[n] = '\0';
@@ -128,20 +133,21 @@ int		get_next_line(const int fd, char **line)
 	{
 	ft_putstr("E");//
 		*line = strnjoin(strpast, charpos(str, '\n'), str);//ok
-		//free strpast and create new of good size
-		tmp = strzcpy(charpos(str, '\n') + 1, str);
 		ft_strclr(strpast);//
-		strpast = tmp;//ok
-		//free(tmp);//new si on free tmp alors on peut pas l'utiliser apres. As t on besoin de tmp ?
+		strpast = strzcpy(charpos(str, '\n') + 1, str);
 		ft_strclr(str);//is this necessary, do i have to do for all cases?
 		return (1);
 	}
 	else
 	{
 	ft_putstr("F");//
-		strpast = ft_strjoin(strpast, str); //faire join special qui free strpast ancien et str
+		//strpast = ft_strjoin(strpast, str); //faire join special qui free strpast ancien et str
+		strpast = strnjoin(strpast, ft_strlen(str), str); //faire join special qui free strpast ancien et str
 		get_next_line(fd, line);
+		//ft_strclr(strpast);// new clear strpast apres traitement;
+		//strpast = NULL;//rajouter cela en strclr ?
 	}
 	ft_putstr("Z");
-	return (0);// pour faire disparaitre error may reach end of non void function
+//	*line = strpast;//new
+	return (1);// pour faire disparaitre error may reach end of non void function
 }
