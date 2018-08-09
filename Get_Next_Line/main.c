@@ -6,7 +6,7 @@
 /*   By: student@42 <@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/01 22:10:06 by student@42        #+#    #+#             */
-/*   Updated: 2018/03/11 11:07:20 by cmasetti         ###   ########.fr       */
+/*   Updated: 2018/08/09 10:55:14 by cmasetti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 int	get_next_line(int fd, char **line);
 
-int	main(int argc, char ** argv)
+int	main(int argc, char **argv)
 {
 	int		fd;
 	char	*line;
@@ -42,9 +42,9 @@ int	main(int argc, char ** argv)
 	{
 		write(1, line, ft_strlen(line));
 		write(1, "\n", 1);
-	}		// attention si le fichier test n a pas de \n et que ca affiche une erreur c'est normal
-	free(line);							// vous inquietez pas
+	}
+	//si le fichier test n a pas de \n et que ca affiche une erreur c'est normal
+	free(line);// vous inquietez pas
 	close(fd);
 	return (0);
 }
-

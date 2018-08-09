@@ -6,21 +6,12 @@
 /*   By: cmasetti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/26 17:11:28 by cmasetti          #+#    #+#             */
-/*   Updated: 2018/08/08 18:12:59 by cmasetti         ###   ########.fr       */
+/*   Updated: 2018/08/09 12:03:43 by cmasetti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include "libft/includes/libft.h"
-
-//verifier cas !line au debut
-//verifier lecture depuis fichier et depuis lentree standard
-//ligne vide est lue comme rien
-// pas de fuite de memoire, toute memoire allouee est free
-// resultat sans \n
-// 1 seule variable statique
-// gerer plusieurs descripteurs de fichier
-//ft_strdel ou free?
 
 int		charpos(char *str, char c)
 {
@@ -62,7 +53,7 @@ char	*strzcpy(int z, char *str)
 	return (tmp);
 }
 
-//function to join a string and beginning (n chars) of another string + free everything
+//join s1 and beginning (n chars) of s2 + free everything
 char	*strnjoin(char *s1, int n, char *s2)
 {
 	char	*newstr;
@@ -96,58 +87,72 @@ int		get_next_line(const int fd, char **line)
 	int			n;
 	char		*tmp;
 
-	if (strpast != 0 && charpos(strpast, '\n') >= 0)//plusieurs lignes stockees dans strpast
+	if (strpast != 0 && charpos(strpast, '\n') >= 0)//plusieurs lignes stockees
 	{
-	//ft_putstr("A");//
-//	ft_putstr(strpast);//ok
-//		*line = ft_strnew(charpos(strpast, '\n'));
-//		ft_strncpy(*line, strpast, charpos(strpast, '\n'));//ok
-		*line = strnjoin(NULL, charpos(strpast, '\n'), strpast);//utiliser strnjoin p cas null
-		tmp = strzcpy(charpos(strpast, '\n') + 1, strpast);//errroor tmp semble vide
-		ft_strclr(strpast);//clear strpast then reassign
+		if (*line)
+		{
+			ft_strclr(*line);
+			free(*line);//DEL?
+		}
+		*line = strnjoin(NULL, charpos(strpast, '\n'), strpast);
+		//strpast = strzcpy(charpos(strpast, '\n') + 1, strpast);//without tmp
+		tmp = strzcpy(charpos(strpast, '\n') + 1, strpast);
+		if (strpast)//mettre cela avant allocations strpast
+		{
+			ft_strclr(strpast);
+			free(strpast);
+		}
 		strpast = tmp;
-	//	free(tmp);quoi fire avec tmp et strpast. Est ce quon doit le free, peu on sen passer ?
 		return (1);
 	}
-	n = read(fd, str, BUFF_SIZE); //si strpast nul ou reste dune ligne seulement
+	n = read(fd, str, BUFF_SIZE);//si strpast nul ou reste dune ligne seulement
 	if (strpast == 0 && n == 0)//fin de lecture (strpast nul et plus rien a lire)
-	{//ft_putstr("B");// cest la ou faut free les trucs
-		free(strpast);//N
-		//free(str);//N
-		return (0);}
-	if (n < 0)//si erreur
-	{//ft_putstr("C");//
-		return (-1);}
+	{
+		return (0);
+	}
+	if (n < 0)
+		return (-1);
 	if (n == 0)// plus rien a lire mais reste encore stocke dans strpast
 	{
-	//ft_putstr("D");//
+		if (*line)
+		{
+			ft_strclr(*line);
+			free(*line);//DEL?
+		}
 		*line = ft_strtrim(strpast);
 		ft_strclr(strpast);//cest la ou faut free aussi
-		strpast = NULL;
-		//	free(strpast);//N
-	//	free(str);//N
+		strpast = NULL;//free(strpast) et firee(str) ?
 		return (1);
 	}
 	str[n] = '\0';
 	if (charpos(str, '\n') >= 0)// plusieures lignes lues
 	{
-	//ft_putstr("E");//
+		if (*line)
+		{
+			ft_strclr(*line);
+			free(*line);//DEL?
+		}
 		*line = strnjoin(strpast, charpos(str, '\n'), str);//ok
 		ft_strclr(strpast);//
+		if (strpast)
+		{
+			ft_strclr(strpast);
+			free(strpast);//GOOD
+		}
 		strpast = strzcpy(charpos(str, '\n') + 1, str);
-		ft_strclr(str);//is this necessary, do i have to do for all cases?
-		return (1);
 	}
 	else
 	{
-	//ft_putstr("F");//
-		//strpast = ft_strjoin(strpast, str); //faire join special qui free strpast ancien et str
-		strpast = strnjoin(strpast, ft_strlen(str), str); //faire join special qui free strpast ancien et str
+		//strpast = strnjoin(strpast, ft_strlen(str), str);//without tmp
+		tmp = strnjoin(strpast, ft_strlen(str), str);//without tmp
+		if (strpast)//mettre cela avant allocations strpast
+		{
+			ft_strclr(strpast);
+			free(strpast);
+		}
+		strpast = tmp;
 		get_next_line(fd, line);
-		//ft_strclr(strpast);// new clear strpast apres traitement;
-		//strpast = NULL;//rajouter cela en strclr ?
 	}
-//	ft_putstr("Z");
-//	*line = strpast;//new
-	return (1);// pour faire disparaitre error may reach end of non void function
+	ft_strclr(str);//memset str, besoin?
+	return (1);
 }
