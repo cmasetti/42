@@ -6,7 +6,7 @@
 /*   By: cmasetti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/26 17:11:28 by cmasetti          #+#    #+#             */
-/*   Updated: 2018/08/09 12:03:43 by cmasetti         ###   ########.fr       */
+/*   Updated: 2018/08/11 10:15:52 by cmasetti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ char	*strzcpy(int z, char *str)
 	return (tmp);
 }
 
-//join s1 and beginning (n chars) of s2 + free everything
+//join s1 and beginning (n chars) of s2
+
 char	*strnjoin(char *s1, int n, char *s2)
 {
 	char	*newstr;
@@ -87,17 +88,11 @@ int		get_next_line(const int fd, char **line)
 	int			n;
 	char		*tmp;
 
-	if (strpast != 0 && charpos(strpast, '\n') >= 0)//plusieurs lignes stockees
+	if (strpast != 0 && charpos(strpast, '\n') >= 0)
 	{
-		if (*line)
-		{
-			ft_strclr(*line);
-			free(*line);//DEL?
-		}
 		*line = strnjoin(NULL, charpos(strpast, '\n'), strpast);
-		//strpast = strzcpy(charpos(strpast, '\n') + 1, strpast);//without tmp
 		tmp = strzcpy(charpos(strpast, '\n') + 1, strpast);
-		if (strpast)//mettre cela avant allocations strpast
+		if (strpast)
 		{
 			ft_strclr(strpast);
 			free(strpast);
@@ -105,47 +100,36 @@ int		get_next_line(const int fd, char **line)
 		strpast = tmp;
 		return (1);
 	}
-	n = read(fd, str, BUFF_SIZE);//si strpast nul ou reste dune ligne seulement
-	if (strpast == 0 && n == 0)//fin de lecture (strpast nul et plus rien a lire)
+	n = read(fd, str, BUFF_SIZE);
+	if (strpast == 0 && n == 0)
 	{
 		return (0);
 	}
 	if (n < 0)
 		return (-1);
-	if (n == 0)// plus rien a lire mais reste encore stocke dans strpast
+	if (n == 0)
 	{
-		if (*line)
-		{
-			ft_strclr(*line);
-			free(*line);//DEL?
-		}
 		*line = ft_strtrim(strpast);
-		ft_strclr(strpast);//cest la ou faut free aussi
-		strpast = NULL;//free(strpast) et firee(str) ?
+		ft_strclr(strpast);
+		strpast = NULL;
 		return (1);
 	}
 	str[n] = '\0';
-	if (charpos(str, '\n') >= 0)// plusieures lignes lues
+	if (charpos(str, '\n') >= 0)
 	{
-		if (*line)
-		{
-			ft_strclr(*line);
-			free(*line);//DEL?
-		}
-		*line = strnjoin(strpast, charpos(str, '\n'), str);//ok
-		ft_strclr(strpast);//
+		*line = strnjoin(strpast, charpos(str, '\n'), str);
+		ft_strclr(strpast);
 		if (strpast)
 		{
 			ft_strclr(strpast);
-			free(strpast);//GOOD
+			free(strpast);
 		}
 		strpast = strzcpy(charpos(str, '\n') + 1, str);
 	}
 	else
 	{
-		//strpast = strnjoin(strpast, ft_strlen(str), str);//without tmp
-		tmp = strnjoin(strpast, ft_strlen(str), str);//without tmp
-		if (strpast)//mettre cela avant allocations strpast
+		tmp = strnjoin(strpast, ft_strlen(str), str);
+		if (strpast)
 		{
 			ft_strclr(strpast);
 			free(strpast);
@@ -153,6 +137,6 @@ int		get_next_line(const int fd, char **line)
 		strpast = tmp;
 		get_next_line(fd, line);
 	}
-	ft_strclr(str);//memset str, besoin?
+	ft_strclr(str);
 	return (1);
 }
