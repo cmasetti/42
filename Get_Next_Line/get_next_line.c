@@ -6,7 +6,7 @@
 /*   By: cmasetti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/26 17:11:28 by cmasetti          #+#    #+#             */
-/*   Updated: 2018/08/11 10:15:52 by cmasetti         ###   ########.fr       */
+/*   Updated: 2018/08/11 12:12:58 by cmasetti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,23 +92,17 @@ int		get_next_line(const int fd, char **line)
 	{
 		*line = strnjoin(NULL, charpos(strpast, '\n'), strpast);
 		tmp = strzcpy(charpos(strpast, '\n') + 1, strpast);
-		if (strpast)
-		{
-			ft_strclr(strpast);
-			free(strpast);
-		}
+		ft_strclrfree(strpast);
 		strpast = tmp;
 		return (1);
 	}
 	n = read(fd, str, BUFF_SIZE);
-	if (strpast == 0 && n == 0)
-	{
-		return (0);
-	}
 	if (n < 0)
 		return (-1);
 	if (n == 0)
 	{
+		if (strpast == 0)
+			return (0);
 		*line = ft_strtrim(strpast);
 		ft_strclr(strpast);
 		strpast = NULL;
@@ -118,22 +112,13 @@ int		get_next_line(const int fd, char **line)
 	if (charpos(str, '\n') >= 0)
 	{
 		*line = strnjoin(strpast, charpos(str, '\n'), str);
-		ft_strclr(strpast);
-		if (strpast)
-		{
-			ft_strclr(strpast);
-			free(strpast);
-		}
+		ft_strclrfree(strpast);
 		strpast = strzcpy(charpos(str, '\n') + 1, str);
 	}
 	else
 	{
 		tmp = strnjoin(strpast, ft_strlen(str), str);
-		if (strpast)
-		{
-			ft_strclr(strpast);
-			free(strpast);
-		}
+		ft_strclrfree(strpast);
 		strpast = tmp;
 		get_next_line(fd, line);
 	}
