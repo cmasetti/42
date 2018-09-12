@@ -6,29 +6,14 @@
 /*   By: cmasetti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/26 17:11:28 by cmasetti          #+#    #+#             */
-/*   Updated: 2018/08/11 12:12:58 by cmasetti         ###   ########.fr       */
+/*   Updated: 2018/09/12 16:08:13 by cmasetti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include "libft/includes/libft.h"
 
-int		charpos(char *str, char c)
-{
-	int			i;
-
-	i = 0;
-	while (*str)
-	{
-		if (*str == c)
-			return (i);
-		i++;
-		str++;
-	}
-	return (-1);
-}
-
-//function to copy a string after the z chracters and free the tmp variable
+//function to copy a string after the z char
 
 char	*strzcpy(int z, char *str)
 {
@@ -53,7 +38,7 @@ char	*strzcpy(int z, char *str)
 	return (tmp);
 }
 
-//join s1 and beginning (n chars) of s2
+//join s1 and first n chars of s2
 
 char	*strnjoin(char *s1, int n, char *s2)
 {
@@ -81,47 +66,66 @@ char	*strnjoin(char *s1, int n, char *s2)
 	return (newstr);
 }
 
-int		get_next_line(const int fd, char **line)
+int		gnl_fdread(char **str, char **strpast, int fd, char **line)
 {
-	static char	*strpast;
-	char		str[BUFF_SIZE + 1];
-	int			n;
-	char		*tmp;
+	int		n;
 
-	if (strpast != 0 && charpos(strpast, '\n') >= 0)
-	{
-		*line = strnjoin(NULL, charpos(strpast, '\n'), strpast);
-		tmp = strzcpy(charpos(strpast, '\n') + 1, strpast);
-		ft_strclrfree(strpast);
-		strpast = tmp;
-		return (1);
-	}
-	n = read(fd, str, BUFF_SIZE);
+	n = read(fd, *str, BUFF_SIZE);
 	if (n < 0)
 		return (-1);
 	if (n == 0)
 	{
-		if (strpast == 0)
+		if (*strpast == 0)
 			return (0);
-		*line = ft_strtrim(strpast);
-		ft_strclr(strpast);
-		strpast = NULL;
+		*line = ft_strtrim(*strpast);
+		ft_strclr(*strpast);
+		*strpast = NULL;
 		return (1);
 	}
-	str[n] = '\0';
-	if (charpos(str, '\n') >= 0)
+	(*str)[n] = '\0';
+	return (2);
+}
+
+void	gnl_fdyes(char **str, char **strpast, int fd, char **line)
+{
+	char	*tmp;
+
+	tmp = "";
+	if (ft_charpos(*str, '\n') >= 0)
 	{
-		*line = strnjoin(strpast, charpos(str, '\n'), str);
-		ft_strclrfree(strpast);
-		strpast = strzcpy(charpos(str, '\n') + 1, str);
+		*line = strnjoin(*strpast, ft_charpos(*str, '\n'), *str);
+		ft_strclrfree(*strpast);
+		*strpast = strzcpy(ft_charpos(*str, '\n') + 1, *str);
 	}
 	else
 	{
-		tmp = strnjoin(strpast, ft_strlen(str), str);
-		ft_strclrfree(strpast);
-		strpast = tmp;
+		tmp = strnjoin(*strpast, ft_strlen(*str), *str);
+		ft_strclrfree(*strpast);
+		*strpast = tmp;
 		get_next_line(fd, line);
 	}
-	ft_strclr(str);
+}
+
+int		get_next_line(const int fd, char **line)
+{
+	static char	*strpast;
+	char		*str;
+	char		*tmp;
+	int			ret;
+
+	str = ft_memalloc(BUFF_SIZE + 1);
+	if (strpast != 0 && ft_charpos(strpast, '\n') >= 0)
+	{
+		*line = strnjoin(NULL, ft_charpos(strpast, '\n'), strpast);
+		tmp = strzcpy(ft_charpos(strpast, '\n') + 1, strpast);
+		ft_strclrfree(strpast);
+		strpast = tmp;
+		return (1);
+	}
+	ret = gnl_fdread(&str, &strpast, fd, line);
+	if (ret != 2)
+		return (ret);
+	gnl_fdyes(&str, &strpast, fd, line);
+	ft_strclrfree(str);
 	return (1);
 }

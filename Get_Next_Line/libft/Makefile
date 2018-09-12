@@ -6,7 +6,7 @@
 #    By: cmasetti <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/29 18:34:40 by cmasetti          #+#    #+#              #
-#    Updated: 2018/08/11 10:59:51 by cmasetti         ###   ########.fr        #
+#    Updated: 2018/09/12 15:46:31 by cmasetti         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,8 +24,8 @@ SRC = ft_strdup.c ft_strcpy.c ft_strncpy.c ft_strcat.c ft_strncat.c ft_strlcat.c
    ft_strclr.c ft_strlen.c ft_striter.c ft_striteri.c ft_strmap.c ft_strmapi.c \
    ft_strequ.c ft_strnequ.c ft_strsub.c ft_strjoin.c ft_iswspc.c ft_strtrim.c \
    ft_strsplit.c ft_lstnew.c ft_lstdelone.c ft_lstdel.c ft_lstadd.c ft_lstiter.c \
+   ft_charpos.c \
    ft_strclrfree.c ft_lstmap.c ft_max.c ft_min.c ft_lstpop.c ft_arrlen.c ft_arrtolst.c
-
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)

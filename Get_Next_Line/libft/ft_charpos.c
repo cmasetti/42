@@ -1,21 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_charpos.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cmasetti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/26 17:11:43 by cmasetti          #+#    #+#             */
-/*   Updated: 2018/09/12 16:03:59 by cmasetti         ###   ########.fr       */
+/*   Created: 2018/09/12 15:31:47 by cmasetti          #+#    #+#             */
+/*   Updated: 2018/09/12 15:39:07 by cmasetti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# define BUFF_SIZE 32
-# include "libft/includes/libft.h"
+#include "includes/libft.h"
 
-void			lstmerge(t_list **alst1, t_list **alst2);
-int				get_next_line(const int fd, char **line);
+int		ft_charpos(char *str, char c)
+{
+	int		i;
 
-#endif
+	i = 0;
+	while (*str)
+	{
+		if (*str == c)
+			return (i);
+		i++;
+		str++;
+	}
+	return (-1);
+}
